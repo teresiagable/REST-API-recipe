@@ -2,6 +2,7 @@ package se.lexicon.almgru.assignmentjpaj33.entity;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -12,12 +13,13 @@ public class RecipeInstruction {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String uuid;
+    private String recipeInstructionId;
 
+    @Column(length = 1500)
     private String instructions;
 
-    public RecipeInstruction(String uuid, String instructions) {
-        this.uuid = uuid;
+    public RecipeInstruction(String recipeInstructionId, String instructions) {
+        this.recipeInstructionId = recipeInstructionId;
         this.instructions = instructions;
     }
 
@@ -27,8 +29,8 @@ public class RecipeInstruction {
 
     public RecipeInstruction() { }
 
-    public String getUuid() {
-        return uuid;
+    public String getRecipeInstructionId() {
+        return recipeInstructionId;
     }
 
     public String getInstructions() {
@@ -44,18 +46,18 @@ public class RecipeInstruction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RecipeInstruction that = (RecipeInstruction) o;
-        return Objects.equals(uuid, that.uuid) && Objects.equals(instructions, that.instructions);
+        return Objects.equals(recipeInstructionId, that.recipeInstructionId) && Objects.equals(instructions, that.instructions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, instructions);
+        return Objects.hash(recipeInstructionId, instructions);
     }
 
     @Override
     public String toString() {
         return "RecipeInstruction{" +
-                "uuid='" + uuid + '\'' +
+                "uuid='" + recipeInstructionId + '\'' +
                 ", instructions='" + instructions + '\'' +
                 '}';
     }

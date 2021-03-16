@@ -7,32 +7,32 @@ import java.util.Objects;
 public class Ingredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int ingredientId;
 
     @Column(unique = true)
-    private String name;
+    private String ingredientName;
 
-    public Ingredient(int id, String name) {
-        this.id = id;
-        this.name = name;
+    public Ingredient(int ingredientId, String ingredientName) {
+        this.ingredientId = ingredientId;
+        this.ingredientName = ingredientName;
     }
 
-    public Ingredient(String name) {
-        this(0, name);
+    public Ingredient(String ingredientName) {
+        this(0, ingredientName);
     }
 
     public Ingredient() { }
 
-    public int getId() {
-        return id;
+    public int getIngredientId() {
+        return ingredientId;
     }
 
-    public String getName() {
-        return name;
+    public String getIngredientName() {
+        return ingredientName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setIngredientName(String name) {
+        this.ingredientName = name;
     }
 
     @Override
@@ -40,19 +40,19 @@ public class Ingredient {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ingredient that = (Ingredient) o;
-        return id == that.id && Objects.equals(name, that.name);
+        return ingredientId == that.ingredientId && Objects.equals(ingredientName, that.ingredientName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(ingredientId, ingredientName);
     }
 
     @Override
     public String toString() {
         return "Ingredient{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "id=" + ingredientId +
+                ", name='" + ingredientName + '\'' +
                 '}';
     }
 }
