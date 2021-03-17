@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Bean;
 import se.lexicon.almgru.assignmentjpaj33.TestDataGenerator;
 import se.lexicon.almgru.assignmentjpaj33.entity.Ingredient;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,5 +63,35 @@ public class IngredientRepositoryTest {
 
         Optional<Ingredient> actual = repo.findByIngredientNameEquals("testingredient");
         assertFalse(actual.isPresent());
+    }
+
+    @Test
+    @DisplayName("findByIngredientNameContainingIgnoreCase should find matching ingredients")
+    void findByIngredientNameContainingIgnoreCase_findMatching() {
+        List<Ingredient> ingredients = Arrays.asList(
+                testDataGen.ingredient().setName("apple").build(),
+                testDataGen.ingredient().setName("pineapple").build(),
+                testDataGen.ingredient().setName("carrot").build()
+        );
+        ingredients.forEach(em::persist);
+        em.flush();
+
+        Collection<Ingredient> actual = repo.findByIngredientNameContainingIgnoreCase("apple");
+
+        assertTrue(actual.contains(ingredients.get(0)));
+        assertTrue(actual.contains(ingredients.get(1)));
+        assertFalse(actual.contains(ingredients.get(2)));
+    }
+
+    @Test
+    @DisplayName("findByIngredientNameContainsIgnoreCase should be case insensitive")
+    void findByIngredientNameContainsIgnoreCase_caseInsensitive() {
+        Ingredient ingredient = testDataGen.ingredient().setName("Onion").build();
+        em.persistAndFlush(ingredient);
+
+        Collection<Ingredient> actual = repo.findByIngredientNameContainingIgnoreCase("onion");
+
+        assertEquals(1, actual.size());
+        assertTrue(actual.contains(ingredient));
     }
 }
