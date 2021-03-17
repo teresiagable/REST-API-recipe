@@ -50,4 +50,15 @@ public class IngredientRepositoryTest {
         assertTrue(actual.isPresent());
         assertEquals(expected.getIngredientName(), actual.get().getIngredientName());
     }
+
+    @Test
+    @DisplayName("findByIngredientNameEquals should be case sensitive")
+    void findByIngredientNameEquals_caseSensitive() {
+        String name = "TestIngredient";
+        Ingredient ingredient = testDataGen.ingredient().setName(name).build();
+        em.persistAndFlush(ingredient);
+
+        Optional<Ingredient> actual = repo.findByIngredientNameEquals("testingredient");
+        assertFalse(actual.isPresent());
+    }
 }

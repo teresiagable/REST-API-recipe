@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface IngredientRepository extends CrudRepository<Ingredient, Integer> {
     /**
-     * Find an ingredient by exact name match.
+     * Find an ingredient by exact name match, case sensitive.
      * @param name exact name of ingredient to find.
      * @return An optional containing the ingredient if an ingredient exists with 'name'.
      */
