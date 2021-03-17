@@ -2,6 +2,7 @@ package se.lexicon.almgru.assignmentjpaj33.entity;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 
 @Entity
@@ -13,7 +14,10 @@ public class RecipeCategory {
     @Column(unique = true)
     private String category;
 
-    @ManyToMany
+    @ManyToMany(
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            fetch = FetchType.LAZY
+    )
     @JoinTable(
             name = "recipe_recipe_category",
             joinColumns = @JoinColumn(name = "recipe_category_id"),
@@ -27,8 +31,12 @@ public class RecipeCategory {
         this.recipes = recipes;
     }
 
+    public RecipeCategory(String category, Collection<Recipe> recipes) {
+        this(0, category, recipes);
+    }
+
     public RecipeCategory(String category) {
-        this.category = category;
+        this(0, category, new HashSet<>());
     }
 
     public RecipeCategory() { }

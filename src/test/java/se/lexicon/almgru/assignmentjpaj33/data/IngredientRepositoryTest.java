@@ -45,7 +45,7 @@ public class IngredientRepositoryTest {
     @DisplayName("findByIngredientNameEquals should find existing ingredient")
     void findByIngredientNameEquals_findsExisting() {
         String name = testDataGen.ingredientName();
-        Ingredient expected = testDataGen.ingredient().setName(name).build();
+        Ingredient expected = new Ingredient(name);
         em.persistAndFlush(expected);
 
         Optional<Ingredient> actual = repo.findByIngredientNameEquals(name);
@@ -58,7 +58,7 @@ public class IngredientRepositoryTest {
     @DisplayName("findByIngredientNameEquals should be case sensitive")
     void findByIngredientNameEquals_caseSensitive() {
         String name = "TestIngredient";
-        Ingredient ingredient = testDataGen.ingredient().setName(name).build();
+        Ingredient ingredient = new Ingredient(name);
         em.persistAndFlush(ingredient);
 
         Optional<Ingredient> actual = repo.findByIngredientNameEquals("testingredient");
@@ -69,9 +69,9 @@ public class IngredientRepositoryTest {
     @DisplayName("findByIngredientNameContainingIgnoreCase should find matching ingredients")
     void findByIngredientNameContainingIgnoreCase_findMatching() {
         List<Ingredient> ingredients = Arrays.asList(
-                testDataGen.ingredient().setName("apple").build(),
-                testDataGen.ingredient().setName("pineapple").build(),
-                testDataGen.ingredient().setName("carrot").build()
+                new Ingredient("apple"),
+                new Ingredient("pineapple"),
+                new Ingredient("carrot")
         );
         ingredients.forEach(em::persist);
         em.flush();
@@ -86,7 +86,7 @@ public class IngredientRepositoryTest {
     @Test
     @DisplayName("findByIngredientNameContainsIgnoreCase should be case insensitive")
     void findByIngredientNameContainsIgnoreCase_caseInsensitive() {
-        Ingredient ingredient = testDataGen.ingredient().setName("Onion").build();
+        Ingredient ingredient = new Ingredient("Onion");
         em.persistAndFlush(ingredient);
 
         Collection<Ingredient> actual = repo.findByIngredientNameContainingIgnoreCase("onion");

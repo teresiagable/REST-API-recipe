@@ -1,7 +1,7 @@
 package se.lexicon.almgru.assignmentjpaj33;
 
 import com.github.javafaker.Faker;
-import se.lexicon.almgru.assignmentjpaj33.entity.Ingredient;
+import se.lexicon.almgru.assignmentjpaj33.entity.*;
 
 import java.util.Random;
 
@@ -12,28 +12,19 @@ public class TestDataGenerator {
         this.faker = new Faker(new Random(seed));
     }
 
-    public IngredientBuilder ingredient() {
-        return new IngredientBuilder().setName(ingredientName());
+    public Ingredient ingredient() {
+        return new Ingredient(ingredientName());
     }
 
     public String ingredientName() {
         return faker.food().ingredient();
     }
 
-    public static class IngredientBuilder {
-        private final Ingredient ingredient;
+    public Recipe recipeWithName(String name) {
+        return new Recipe(name, recipeInstruction());
+    }
 
-        private IngredientBuilder() {
-            this.ingredient = new Ingredient();
-        }
-
-        public IngredientBuilder setName(String name) {
-            ingredient.setIngredientName(name);
-            return this;
-        }
-
-        public Ingredient build() {
-            return ingredient;
-        }
+    public RecipeInstruction recipeInstruction() {
+        return new RecipeInstruction(faker.lorem().paragraph());
     }
 }

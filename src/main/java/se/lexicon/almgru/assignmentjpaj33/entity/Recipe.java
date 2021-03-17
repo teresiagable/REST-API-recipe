@@ -1,7 +1,10 @@
 package se.lexicon.almgru.assignmentjpaj33.entity;
 
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 
 @Entity
@@ -12,13 +15,23 @@ public class Recipe {
 
     private String recipeName;
 
-    @OneToOne
+    @OneToOne(
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            fetch = FetchType.LAZY
+    )
     private RecipeInstruction instructions;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            fetch = FetchType.LAZY,
+            mappedBy = "recipe"
+    )
     private Collection<RecipeIngredient> ingredients;
 
-    @ManyToMany
+    @ManyToMany(
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            fetch = FetchType.LAZY
+    )
     @JoinTable(
             name = "recipe_recipe_category",
             joinColumns = @JoinColumn(name = "recipe_id"),
@@ -38,6 +51,10 @@ public class Recipe {
     public Recipe(String recipeName, RecipeInstruction instructions, Collection<RecipeIngredient> ingredients,
                   Collection<RecipeCategory> categories) {
         this(0, recipeName, instructions, ingredients, categories);
+    }
+
+    public Recipe(String recipeName, RecipeInstruction instructions) {
+        this(0, recipeName, instructions, new HashSet<>(), new HashSet<>());
     }
 
     public Recipe() { }

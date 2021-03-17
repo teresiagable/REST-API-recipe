@@ -15,11 +15,17 @@ public class RecipeIngredient {
     private double amount;
     private Measurement measurement;
 
-    @ManyToOne
+    @ManyToOne(
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            fetch = FetchType.LAZY
+    )
     @JoinColumn(name = "ingredient_id", table = "recipe_ingredient")
     private Ingredient ingredient;
 
-    @ManyToOne
+    @ManyToOne(
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            fetch = FetchType.LAZY
+    )
     @JoinColumn(name = "recipe_id", table = "recipe_ingredient")
     private Recipe recipe;
 
