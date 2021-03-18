@@ -66,6 +66,15 @@ public class TestDataGenerator {
         return recipe;
     }
 
+    public Recipe recipeWithCategories(RecipeCategory ...categories) {
+        Recipe recipe = new Recipe(recipeName(), recipeInstruction());
+
+        recipe.setIngredients(recipeIngredients(recipe));
+        recipe.setCategories(Arrays.asList(categories));
+
+        return recipe;
+    }
+
     public RecipeInstruction recipeInstruction() {
         return new RecipeInstruction(faker.lorem().paragraph());
     }

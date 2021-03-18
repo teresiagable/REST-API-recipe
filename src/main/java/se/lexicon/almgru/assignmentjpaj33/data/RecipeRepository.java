@@ -22,4 +22,12 @@ public interface RecipeRepository extends CrudRepository<Recipe, Integer> {
      */
     @Query("SELECT r FROM Recipe r JOIN FETCH r.ingredients AS ri WHERE UPPER(ri.ingredient.ingredientName) = UPPER(:name)")
     Set<Recipe> findByIngredientName(@Param("name") String ingredientName);
+
+    /**
+     * Find all recipes that are categorized with the specified category.
+     * @param category Name of category to search recipes by.
+     * @return A set containing all recipes with the specified category.
+     */
+    @Query("SELECT r FROM Recipe r JOIN FETCH r.categories AS rc WHERE UPPER(rc.category) = UPPER(:category)")
+    Set<Recipe> findByCategory(@Param("category") String category);
 }

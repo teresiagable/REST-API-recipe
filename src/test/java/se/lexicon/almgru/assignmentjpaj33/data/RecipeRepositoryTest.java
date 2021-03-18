@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import se.lexicon.almgru.assignmentjpaj33.TestDataGenerator;
 import se.lexicon.almgru.assignmentjpaj33.entity.Ingredient;
 import se.lexicon.almgru.assignmentjpaj33.entity.Recipe;
+import se.lexicon.almgru.assignmentjpaj33.entity.RecipeCategory;
 import se.lexicon.almgru.assignmentjpaj33.entity.RecipeIngredient;
 
 import java.util.*;
@@ -103,7 +104,6 @@ public class RecipeRepositoryTest {
 
         Collection<Recipe> actual = repo.findByIngredientName("cucumber");
 
-        assertEquals(1, actual.size());
         assertTrue(actual.contains(recipe));
     }
 
@@ -127,5 +127,42 @@ public class RecipeRepositoryTest {
 
         assertEquals(1, actual.size());
         assertTrue(actual.contains(recipes.get(0)));
+    }
+
+    @Test
+    @DisplayName("findByCategory should find matching recipes")
+    void findByCategory_findsMatching() {
+        List<RecipeCategory> categories = Arrays.asList(
+                new RecipeCategory("Mexican"),
+                new RecipeCategory("Husmanskost"),
+                new RecipeCategory("Thai")
+        );
+        List<Recipe> recipes = Arrays.asList(
+                testDataGen.recipeWithCategories(categories.get(0)),
+                testDataGen.recipeWithCategories(categories.get(0)),
+                testDataGen.recipeWithCategories(categories.get(1)),
+                testDataGen.recipeWithCategories(categories.get(1)),
+                testDataGen.recipeWithCategories(categories.get(1)),
+                testDataGen.recipeWithCategories(categories.get(2))
+        );
+        recipes.forEach(em::persist);
+        em.flush();
+
+        Collection<Recipe> actual = repo.findByCategory("Husmanskost");
+
+        assertEquals(3, actual.size());
+        assertTrue(actual.containsAll(recipes.subList(2, 5)));
+    }
+
+    @Test
+    @DisplayName("findByCategory should be case insensitive")
+    void findByCategory_caseInsensitive() {
+        RecipeCategory category = new RecipeCategory("Mediterranean");
+        Recipe recipe = testDataGen.recipeWithCategories(category);
+        em.persistAndFlush(recipe);
+
+        Collection<Recipe> actual = repo.findByCategory("mediterranean");
+
+        assertTrue(actual.contains(recipe));
     }
 }
