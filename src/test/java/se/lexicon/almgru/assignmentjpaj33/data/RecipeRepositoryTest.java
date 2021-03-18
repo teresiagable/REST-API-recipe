@@ -24,8 +24,8 @@ public class RecipeRepositoryTest {
     @TestConfiguration
     static class TestConfig {
         @Bean
-        TestDataGenerator testDataGen(long seed) {
-            return new TestDataGenerator(seed);
+        TestDataGenerator testDataGen(long seed, TestEntityManager em) {
+            return new TestDataGenerator(seed, em);
         }
 
         @Bean
