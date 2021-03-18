@@ -5,6 +5,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import se.lexicon.almgru.assignmentjpaj33.entity.*;
 
 import javax.persistence.NoResultException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -43,10 +44,23 @@ public class TestDataGenerator {
         return faker.food().ingredient();
     }
 
+    public String recipeName() {
+        return faker.food().ingredient() + " and " + faker.food().ingredient();
+    }
+
     public Recipe recipeWithName(String name) {
         Recipe recipe = new Recipe(name, recipeInstruction());
 
         recipe.setIngredients(recipeIngredients(recipe));
+        recipe.setCategories(recipeCategories(recipe));
+
+        return recipe;
+    }
+
+    public Recipe recipeWithIngredients(Ingredient ...ingredients) {
+        Recipe recipe = new Recipe(recipeName(), recipeInstruction());
+
+        recipe.setIngredients(recipeIngredients(recipe, Arrays.asList(ingredients)));
         recipe.setCategories(recipeCategories(recipe));
 
         return recipe;
@@ -63,6 +77,12 @@ public class TestDataGenerator {
     public List<RecipeIngredient> recipeIngredients(Recipe recipe) {
         return IntStream.range(1, faker.random().nextInt(3, 10))
                 .mapToObj(i -> new RecipeIngredient(faker.random().nextDouble(), measurement(), ingredient(), recipe))
+                .collect(Collectors.toList());
+    }
+
+    public List<RecipeIngredient> recipeIngredients(Recipe recipe, List<Ingredient> ingredients) {
+        return ingredients.stream()
+                .map(ing -> new RecipeIngredient(faker.random().nextDouble(), measurement(), ing, recipe))
                 .collect(Collectors.toList());
     }
 

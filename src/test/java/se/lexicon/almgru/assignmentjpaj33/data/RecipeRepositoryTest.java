@@ -12,10 +12,7 @@ import se.lexicon.almgru.assignmentjpaj33.entity.Ingredient;
 import se.lexicon.almgru.assignmentjpaj33.entity.Recipe;
 import se.lexicon.almgru.assignmentjpaj33.entity.RecipeIngredient;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -70,5 +67,65 @@ public class RecipeRepositoryTest {
         Collection<Recipe> actual = repo.findByRecipeNameContainingIgnoreCase("pancakes");
 
         assertTrue(actual.contains(recipe));
+    }
+
+    @Test
+    @DisplayName("findByIngredientName should find matching recipes")
+    void findByIngredientName_findsMatching() {
+        List<Ingredient> ingredients = Arrays.asList(
+                new Ingredient("Pasta"),
+                new Ingredient("Egg"),
+                new Ingredient("Bacon"),
+                new Ingredient("Minced meat"),
+                new Ingredient("Crushed tomatoes")
+        );
+        List<Recipe> recipes = Arrays.asList(
+                testDataGen.recipeWithIngredients(ingredients.get(0), ingredients.get(1), ingredients.get(2)),
+                testDataGen.recipeWithIngredients(ingredients.get(0), ingredients.get(3), ingredients.get(4)),
+                testDataGen.recipeWithIngredients(ingredients.get(1), ingredients.get(2))
+        );
+        recipes.forEach(em::persist);
+        em.flush();
+
+        Collection<Recipe> actual = repo.findByIngredientName("Pasta");
+
+        assertTrue(actual.contains(recipes.get(0)));
+        assertTrue(actual.contains(recipes.get(1)));
+        assertFalse(actual.contains(recipes.get(2)));
+    }
+
+    @Test
+    @DisplayName("findByIngredientName should be case insensitive")
+    void findByIngredientName_caseInsensitive() {
+        Ingredient ingredient = new Ingredient("Cucumber");
+        Recipe recipe = testDataGen.recipeWithIngredients(ingredient);
+        em.persistAndFlush(recipe);
+
+        Collection<Recipe> actual = repo.findByIngredientName("cucumber");
+
+        assertEquals(1, actual.size());
+        assertTrue(actual.contains(recipe));
+    }
+
+    @Test
+    @DisplayName("findByIngredientName should perform exact match")
+    void findByIngredientName_exactMatch() {
+        List<Ingredient> ingredients = Arrays.asList(
+                new Ingredient("Orange"),
+                new Ingredient("Blood Orange"),
+                new Ingredient("Orange Peel")
+        );
+        List<Recipe> recipes = Arrays.asList(
+                testDataGen.recipeWithIngredients(ingredients.get(0)),
+                testDataGen.recipeWithIngredients(ingredients.get(1)),
+                testDataGen.recipeWithIngredients(ingredients.get(2))
+        );
+        recipes.forEach(em::persist);
+        em.flush();
+
+        Collection<Recipe> actual = repo.findByIngredientName("Orange");
+
+        assertEquals(1, actual.size());
+        assertTrue(actual.contains(recipes.get(0)));
     }
 }
