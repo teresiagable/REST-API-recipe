@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import se.lexicon.almgru.assignmentjpaj33.entity.Recipe;
 
+import java.util.Collection;
 import java.util.Set;
 
 public interface RecipeRepository extends CrudRepository<Recipe, Integer> {
@@ -30,4 +31,12 @@ public interface RecipeRepository extends CrudRepository<Recipe, Integer> {
      */
     @Query("SELECT r FROM Recipe r JOIN FETCH r.categories AS rc WHERE UPPER(rc.category) = UPPER(:category)")
     Set<Recipe> findByCategory(@Param("category") String category);
+
+    /**
+     * Find all recipes that contain one or more of the specified categories.
+     * @param categories Collection of categories to match recipes by.
+     * @return A set containing all recipes that contain one or more of the specified categories.
+     */
+    @Query("SELECT r FROM Recipe r JOIN FETCH r.categories AS rc WHERE rc.category IN (:categories)")
+    Set<Recipe> findByCategoriesContainsAny(@Param("categories") Collection<String> categories);
 }

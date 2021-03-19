@@ -165,4 +165,31 @@ public class RecipeRepositoryTest {
 
         assertTrue(actual.contains(recipe));
     }
+
+    @Test
+    @DisplayName("findByCategoryContainsAny should find matching recipes")
+    void findByCategoryContainsAny_findsMatching() {
+        List<RecipeCategory> categories = Arrays.asList(
+                new RecipeCategory("Breakfast"),
+                new RecipeCategory("Vegetarian"),
+                new RecipeCategory("Gluten-free"),
+                new RecipeCategory("Dinner"),
+                new RecipeCategory("Italian")
+        );
+        List<Recipe> recipes = Arrays.asList(
+                testDataGen.recipeWithCategories(categories.get(0)),
+                testDataGen.recipeWithCategories(categories.get(1)),
+                testDataGen.recipeWithCategories(categories.get(2)),
+                testDataGen.recipeWithCategories(categories.get(3)),
+                testDataGen.recipeWithCategories(categories.get(4))
+        );
+        recipes.forEach(em::persist);
+        em.flush();
+
+        Collection<Recipe> actual = repo.findByCategoriesContainsAny(Arrays.asList("Breakfast", "Vegetarian"));
+
+        assertEquals(2, actual.size());
+        assertTrue(actual.contains(recipes.get(0)));
+        assertTrue(actual.contains(recipes.get(1)));
+    }
 }
