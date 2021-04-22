@@ -1,8 +1,8 @@
-package se.lexicon.almgru.assignmentjpaj33;
+package se.lexicon.almgru.restapi;
 
 import com.github.javafaker.Faker;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import se.lexicon.almgru.assignmentjpaj33.entity.*;
+import se.lexicon.almgru.restapi.entity.*;
 
 import javax.persistence.NoResultException;
 import java.util.Arrays;

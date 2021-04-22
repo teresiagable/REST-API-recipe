@@ -1,7 +1,7 @@
-package se.lexicon.almgru.assignmentjpaj33.data;
+package se.lexicon.almgru.restapi.data;
 
 import org.springframework.data.repository.CrudRepository;
-import se.lexicon.almgru.assignmentjpaj33.entity.Ingredient;
+import se.lexicon.almgru.restapi.entity.Ingredient;
 
 import java.util.Optional;
 import java.util.Set;

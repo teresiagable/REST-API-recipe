@@ -1,4 +1,4 @@
-package se.lexicon.almgru.assignmentjpaj33.data;
+package se.lexicon.almgru.restapi.data;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,11 +7,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import se.lexicon.almgru.assignmentjpaj33.TestDataGenerator;
-import se.lexicon.almgru.assignmentjpaj33.entity.Ingredient;
-import se.lexicon.almgru.assignmentjpaj33.entity.Recipe;
-import se.lexicon.almgru.assignmentjpaj33.entity.RecipeCategory;
-import se.lexicon.almgru.assignmentjpaj33.entity.RecipeIngredient;
+import se.lexicon.almgru.restapi.TestDataGenerator;
+import se.lexicon.almgru.restapi.entity.Ingredient;
+import se.lexicon.almgru.restapi.entity.Recipe;
+import se.lexicon.almgru.restapi.entity.RecipeCategory;
 
 import java.util.*;
 

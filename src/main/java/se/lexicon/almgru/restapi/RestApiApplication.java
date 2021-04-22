@@ -1,13 +1,13 @@
-package se.lexicon.almgru.assignmentjpaj33;
+package se.lexicon.almgru.restapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AssignmentJpaJ33Application {
+public class RestApiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AssignmentJpaJ33Application.class, args);
+        SpringApplication.run(RestApiApplication.class, args);
     }
 
 }

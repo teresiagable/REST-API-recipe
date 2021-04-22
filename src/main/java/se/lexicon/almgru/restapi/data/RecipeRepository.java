@@ -1,9 +1,9 @@
-package se.lexicon.almgru.assignmentjpaj33.data;
+package se.lexicon.almgru.restapi.data;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import se.lexicon.almgru.assignmentjpaj33.entity.Recipe;
+import se.lexicon.almgru.restapi.entity.Recipe;
 
 import java.util.Collection;
 import java.util.Set;

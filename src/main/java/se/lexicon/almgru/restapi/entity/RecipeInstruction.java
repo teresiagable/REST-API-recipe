@@ -1,4 +1,4 @@
-package se.lexicon.almgru.assignmentjpaj33.entity;
+package se.lexicon.almgru.restapi.entity;
 
 import org.hibernate.annotations.GenericGenerator;
 

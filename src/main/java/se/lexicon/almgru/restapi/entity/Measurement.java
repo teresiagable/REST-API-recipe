@@ -1,4 +1,4 @@
-package se.lexicon.almgru.assignmentjpaj33.entity;
+package se.lexicon.almgru.restapi.entity;
 
 public enum Measurement {
     MILLILITER,

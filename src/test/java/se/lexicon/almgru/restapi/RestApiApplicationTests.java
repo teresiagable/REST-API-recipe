@@ -1,10 +1,10 @@
-package se.lexicon.almgru.assignmentjpaj33;
+package se.lexicon.almgru.restapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AssignmentJpaJ33ApplicationTests {
+class RestApiApplicationTests {
 
     @Test
     void contextLoads() {
