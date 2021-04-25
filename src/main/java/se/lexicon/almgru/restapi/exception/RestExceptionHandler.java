@@ -21,4 +21,26 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                         ex.getMessage(), request.getDescription(false))
                 );
     }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ExceptionResponse> handleValidationException(ValidationException ex, WebRequest request) {
+        return ResponseEntity
+                .badRequest()
+                .body(new ExceptionResponse(
+                        LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.name(),
+                        ex.getMessage(), request.getDescription(false)
+                ));
+    }
+
+    @ExceptionHandler(UniquenessViolationException.class)
+    public ResponseEntity<ExceptionResponse> handleUniquenessViolation(UniquenessViolationException ex,
+                                                                       WebRequest request) {
+        return ResponseEntity
+                .unprocessableEntity()
+                .body(new ExceptionResponse(
+                        LocalDateTime.now(), HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                        HttpStatus.UNPROCESSABLE_ENTITY.name(), ex.getMessage(),
+                        request.getDescription(false)
+                ));
+    }
 }
