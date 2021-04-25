@@ -1,6 +1,9 @@
 package se.lexicon.almgru.restapi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -32,25 +35,32 @@ import java.util.List;
 @Component
 public class DatabaseSeeder implements ApplicationRunner {
     private final IngredientRepository ingredientRepository;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final boolean shouldSeedDatabase;
 
     @Autowired
-    public DatabaseSeeder(IngredientRepository ingredientRepository) {
+    public DatabaseSeeder(IngredientRepository ingredientRepository,
+                          @Value("${almgru.restapi.seed-ingredients-database}") boolean shouldSeedDatabase) {
         this.ingredientRepository = ingredientRepository;
+        this.shouldSeedDatabase = shouldSeedDatabase;
     }
 
     public void run(ApplicationArguments args) {
-        if (!ingredientRepository.findAll().iterator().hasNext()) {
+        if (!ingredientRepository.findAll().iterator().hasNext() && shouldSeedDatabase) {
+            logger.info("Ingredients database is empty. Seeding ingredients with data from livsmedelsverket...");
             File outputFile = Paths.get("seed-data.xml").toAbsolutePath().toFile();
             Document document = null;
 
             try {
                 if (outputFile.exists()) {
+                    logger.info("Ingredients data exists locally. Loading data from local file...");
                     document = readDocument(outputFile);
                 } else {
+                    logger.info("Ingredients data does not exist locally. Please wait up to a few minutes while the data is downloaded.");
                     document = downloadIngredientsSeed(outputFile);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.trace("Error loading seed data.", e);
                 System.exit(1);
             }
 
@@ -66,11 +76,15 @@ public class DatabaseSeeder implements ApplicationRunner {
                 }
             }
 
+            logger.info("Inserting seed data into database.");
             ingredientRepository.saveAll(ingredientsToSave);
+
+            logger.info("Seeding of ingredients database complete.");
         }
     }
 
-    public Document downloadIngredientsSeed(File output) throws ParserConfigurationException, IOException, TransformerException, SAXException {
+    public Document downloadIngredientsSeed(File output) throws ParserConfigurationException, IOException,
+            TransformerException, SAXException {
         String url = "http://www7.slv.se/apilivsmedel/LivsmedelService.svc/Livsmedel/Naringsvarde/20210422";
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

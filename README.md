@@ -2,6 +2,14 @@
 
 REST API assignment at Lexicon's Fullstack developer course, java group 33.
 
+## Seeding ingredients database with ingredients from livsmedelsverket
+
+1. Change `almgru.restapi.seed-ingredients-database` from `false` to `true`.
+2. Make sure the ingredients database is empty. To make sure it is you can temporarily change
+   `spring.jpa.hibernate.ddl-auto` from `none` to `create`. Don't forget to change it back if you want to persist the
+   data!
+3. Start the application
+
 ## API
 
 ### Recipes
