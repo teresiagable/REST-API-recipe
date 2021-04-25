@@ -59,7 +59,7 @@ The ingredient name must match exactly but case is ignored. `ingredientName=eg` 
 
 #### Get a single ingredient by id
 
-`GET /api/ingredients?id=<id>`
+`GET /api/ingredients/<id>`
 
 #### Search ingredient by name
 
