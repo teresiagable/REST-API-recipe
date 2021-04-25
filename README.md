@@ -20,7 +20,7 @@ REST API assignment at Lexicon's Fullstack developer course, java group 33.
 
 #### Get a single recipe by id
 
-`GET /api/recipes?id=<id>`
+`GET /api/recipes/<id>`
 
 #### Search recipes by name 
 
@@ -42,14 +42,14 @@ REST API assignment at Lexicon's Fullstack developer course, java group 33.
 
 #### Get all recipes that contains the specifed ingredient
 
-`GET /api/recipes?ingredientName=<ingredient name>`
+`GET /api/recipes?ingredient=<ingredient name>`
 
-The ingredient name must match exactly but case is ignored. `ingredientName=eg` for example will not match 'Egg', but `ingredientName=egg` will.
+The ingredient name must match exactly but case is ignored. `ingredient=eg` for example will not match 'Egg', but `ingredient=egg` will.
 
 ##### Examples
 
-- `GET /api/recipes?ingredientName=bacon`
-- `GET /api/recipes?ingredientName=vegetable+oil`
+- `GET /api/recipes?ingredient=bacon`
+- `GET /api/recipes?ingredient=vegetable+oil`
 
 ### Ingredients
 
@@ -64,5 +64,3 @@ The ingredient name must match exactly but case is ignored. `ingredientName=eg` 
 #### Search ingredient by name
 
 `GET /api/ingredients?query=<name query>`
-
-### Categories
