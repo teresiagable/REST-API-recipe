@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import se.lexicon.almgru.restapi.data.RecipeRepository;
-import se.lexicon.almgru.restapi.entity.Ingredient;
 import se.lexicon.almgru.restapi.entity.Recipe;
+import se.lexicon.almgru.restapi.exception.InvalidParameterCombinationException;
 
 import java.util.List;
 
@@ -27,7 +27,10 @@ public class RecipeController {
             @RequestParam(name = "ingredient", required = false) String ingredient,
             @RequestParam(name = "categories", required = false) List<String> categories) {
         if (invalidParamCombination(nameQuery, ingredient, categories)) {
-            return ResponseEntity.badRequest().build();
+            throw new InvalidParameterCombinationException(
+                    "Parameters 'query', 'ingredient' and 'categories' cannot be combined. " +
+                    "Please only specify one of them."
+            );
         }
 
         if (nameQuery != null) {
