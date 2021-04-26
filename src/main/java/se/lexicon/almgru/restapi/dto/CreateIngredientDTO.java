@@ -1,13 +1,16 @@
 package se.lexicon.almgru.restapi.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 public class CreateIngredientDTO {
     @NotNull
-    @Size(min = 1)
+    @NotEmpty
     private final String name;
 
+    @JsonCreator
     public CreateIngredientDTO(String name) {
         this.name = name;
     }
