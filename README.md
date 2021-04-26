@@ -51,6 +51,30 @@ The ingredient name must match exactly but case is ignored. `ingredient=eg` for 
 - `GET /api/recipes?ingredient=bacon`
 - `GET /api/recipes?ingredient=vegetable+oil`
 
+#### Create recipe
+
+`POST /api/recipes`
+
+Request body:
+```
+{
+   "name": "<string>",
+   "instruction": "<string>",
+   "ingredients": [
+      {
+         "name": "<string>",
+         "measurement": "<LITER|DECILITER|CENTILITER|KILOGRAM|GRAM|MILLIGRAM>",
+         "amount": <number>
+      },
+      ...
+   ],
+   "categories": [
+      "<string>",
+      ...
+   ]
+}
+```
+
 ### Ingredients
 
 #### Get all ingredients
@@ -64,3 +88,14 @@ The ingredient name must match exactly but case is ignored. `ingredient=eg` for 
 #### Search ingredient by name
 
 `GET /api/ingredients?query=<name query>`
+
+#### Create ingredient
+
+`POST /api/ingredients`
+
+Request body: 
+```
+{
+   "name": "<string>"
+}
+```
