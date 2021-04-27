@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -100,5 +101,27 @@ public class IngredientController {
         ingredientRepository.delete(toDelete.get());
 
         return ResponseEntity.ok(String.format("Deleted ingredient with id %d.", id));
+    }
+
+    @PatchMapping("/api/ingredients/{id}")
+    public ResponseEntity<String> updateIngredient(@PathVariable Integer id,
+                                                   @Valid @RequestBody CreateIngredientDTO dto,
+                                                   BindingResult bind) {
+
+        if (bind.hasErrors()) {
+            throw new ValidationException("Value for 'name' must not be empty.");
+        }
+
+
+        Optional<Ingredient> toUpdate = ingredientRepository.findById(id);
+
+        if (!toUpdate.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        toUpdate.get().setIngredientName(dto.getName());
+        ingredientRepository.save(toUpdate.get());
+
+        return ResponseEntity.ok(String.format("Updated name '%s' set for ingredient with id %d.", dto.getName(), id));
     }
 }

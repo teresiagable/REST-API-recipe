@@ -46,12 +46,6 @@ public class Recipe {
         this.categories = categories;
     }
 
-    @PreRemove
-    public void preRemove() {
-        categories.forEach(category -> category.removeRecipe(this));
-        ingredients.forEach(RecipeIngredient::detachRecipe);
-    }
-
     public Recipe(String recipeName, RecipeInstruction instructions, Collection<RecipeIngredient> ingredients,
                   Collection<RecipeCategory> categories) {
         this(0, recipeName, instructions, ingredients, categories);
@@ -62,6 +56,22 @@ public class Recipe {
     }
 
     public Recipe() { }
+
+    @PreRemove
+    public void preRemove() {
+        clearIngredients();
+        clearCategories();
+    }
+
+    public void clearIngredients() {
+        ingredients.forEach(RecipeIngredient::detachRecipe);
+        ingredients.clear();
+    }
+
+    public void clearCategories() {
+        categories.forEach(category -> category.removeRecipe(this));
+        categories.clear();
+    }
 
     public int getRecipeId() {
         return recipeId;

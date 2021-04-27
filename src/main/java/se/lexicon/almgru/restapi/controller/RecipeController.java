@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +16,9 @@ import se.lexicon.almgru.restapi.data.RecipeIngredientRepository;
 import se.lexicon.almgru.restapi.data.RecipeInstructionRepository;
 import se.lexicon.almgru.restapi.data.RecipeRepository;
 import se.lexicon.almgru.restapi.dto.CreateRecipeDTO;
+import se.lexicon.almgru.restapi.dto.RecipeCategoryDTO;
 import se.lexicon.almgru.restapi.dto.RecipeDTO;
+import se.lexicon.almgru.restapi.dto.UpdateRecipeDTO;
 import se.lexicon.almgru.restapi.entity.Recipe;
 import se.lexicon.almgru.restapi.entity.RecipeCategory;
 import se.lexicon.almgru.restapi.entity.RecipeIngredient;
@@ -122,6 +125,53 @@ public class RecipeController {
         recipeRepository.save(recipe);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/api/recipes/{id}")
+    public ResponseEntity<String> updateRecipe(@PathVariable Integer id, @Valid @RequestBody UpdateRecipeDTO dto,
+                                               BindingResult bind) {
+        if (bind.hasErrors()) {
+            throw new ValidationException(bind
+                    .getFieldErrors()
+                    .stream()
+                    .map(fieldError -> String.format("%s - %s", fieldError.getField(), fieldError.getDefaultMessage()))
+                    .collect(Collectors.joining(", "))
+            );
+        }
+
+        Optional<Recipe> recipe = recipeRepository.findById(id);
+
+        if (!recipe.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (dto.getName() != null) {
+            recipe.get().setRecipeName(dto.getName());
+        }
+
+        if (dto.getInstructions() != null) {
+            recipe.get().getInstructions().setInstructions(dto.getInstructions());
+        }
+
+        if (dto.getIngredients() != null) {
+            recipe.get().clearIngredients();
+            recipe.get().getIngredients().addAll(dto.getIngredients().stream()
+                    .map(ingredientDTO -> recipeIngredientConverter.dtoToRecipeIngredient(ingredientDTO, recipe.get()))
+                    .collect(Collectors.toList()));
+        }
+
+        if (dto.getCategories() != null) {
+            recipe.get().clearCategories();
+            recipe.get().getCategories().addAll(dto.getCategories().stream()
+                    .map(categoryName -> categoryRepository
+                            .findByCategoryEqualsIgnoreCase(categoryName)
+                            .orElse(new RecipeCategory(categoryName)))
+                    .collect(Collectors.toList()));
+        }
+
+        recipeRepository.save(recipe.get());
+
+        return ResponseEntity.ok(String.format("Recipe with id %d updated succesfully.", id));
     }
 
     @DeleteMapping("/api/recipes/{id}")
