@@ -59,11 +59,11 @@ Request body:
 ```
 {
    "name": "<string>",
-   "instruction": "<string>",
+   "instructions": "<string>",
    "ingredients": [
       {
          "name": "<string>",
-         "measurement": "<LITER|DECILITER|CENTILITER|KILOGRAM|GRAM|MILLIGRAM>",
+         "measurement": "<LITER|DECILITER|CENTILITER|KILOGRAM|GRAM|MILLIGRAM|PIECES>",
          "amount": <number>
       },
       ...
@@ -74,6 +74,8 @@ Request body:
    ]
 }
 ```
+
+Any ingredients or categories that do not exist will be created.
 
 ### Ingredients
 
