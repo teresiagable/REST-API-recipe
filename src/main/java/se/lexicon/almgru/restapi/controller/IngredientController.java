@@ -52,7 +52,7 @@ public class IngredientController {
             throw new ValidationException("Value for 'name' must not be empty.");
         }
 
-        if (repository.findByIngredientNameEquals(dto.getName()).isPresent()) {
+        if (repository.findByIngredientNameEqualsIgnoreCase(dto.getName()).isPresent()) {
             throw new UniquenessViolationException(String.format("An ingredient with name '%s' already exists.",
                     dto.getName()));
         }

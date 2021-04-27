@@ -8,13 +8,11 @@ import java.util.Set;
 
 public interface IngredientRepository extends CrudRepository<Ingredient, Integer> {
     /**
-     * Find an ingredient by exact name match, case sensitive.
+     * Find an ingredient by exact name match, case insensitive.
      * @param name exact name of ingredient to find.
      * @return An optional containing the ingredient if an ingredient exists with 'name'.
-     *
-     * NOTE: 'Equals' suffix added for clarity.
      */
-    Optional<Ingredient> findByIngredientNameEquals(String name);
+    Optional<Ingredient> findByIngredientNameEqualsIgnoreCase(String name);
 
     /**
      * Find all ingredients which name contains the specified query, case insensitive.

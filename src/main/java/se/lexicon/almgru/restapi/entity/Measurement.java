@@ -6,5 +6,6 @@ public enum Measurement {
     LITER,
     MILLIGRAM,
     GRAM,
-    KILOGRAM
+    KILOGRAM,
+    PIECES
 }

@@ -22,8 +22,8 @@ public class CreateRecipeDTO {
     @ElementsNotNull
     private final List<RecipeIngredientDTO> ingredients;
 
-    @ElementsNotEmpty
     @ElementsNotNull
+    @ElementsNotEmpty
     private final List<String> categories;
 
     @JsonCreator

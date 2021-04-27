@@ -48,21 +48,21 @@ public class IngredientRepositoryTest {
         Ingredient expected = new Ingredient(name);
         em.persistAndFlush(expected);
 
-        Optional<Ingredient> actual = repo.findByIngredientNameEquals(name);
+        Optional<Ingredient> actual = repo.findByIngredientNameEqualsIgnoreCase(name);
 
         assertTrue(actual.isPresent());
         assertEquals(expected.getIngredientName(), actual.get().getIngredientName());
     }
 
     @Test
-    @DisplayName("findByIngredientNameEquals should be case sensitive")
+    @DisplayName("findByIngredientNameEquals should be case insensitive")
     void findByIngredientNameEquals_caseSensitive() {
         String name = "TestIngredient";
         Ingredient ingredient = new Ingredient(name);
         em.persistAndFlush(ingredient);
 
-        Optional<Ingredient> actual = repo.findByIngredientNameEquals("testingredient");
-        assertFalse(actual.isPresent());
+        Optional<Ingredient> actual = repo.findByIngredientNameEqualsIgnoreCase("testingredient");
+        assertTrue(actual.isPresent());
     }
 
     @Test
