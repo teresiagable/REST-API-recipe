@@ -19,16 +19,16 @@ public class CreateRecipeDTO {
 
     @NotNull
     @NotEmpty
-    @ElementsNotEmpty
     @ElementsNotNull
-    private final List<String> ingredients;
+    private final List<RecipeIngredientDTO> ingredients;
 
     @ElementsNotEmpty
     @ElementsNotNull
     private final List<String> categories;
 
     @JsonCreator
-    public CreateRecipeDTO(String name, String instructions, List<String> ingredients, List<String> categories) {
+    public CreateRecipeDTO(String name, String instructions, List<RecipeIngredientDTO> ingredients,
+                           List<String> categories) {
         this.name = name;
         this.instructions = instructions;
         this.ingredients = ingredients;
@@ -43,7 +43,7 @@ public class CreateRecipeDTO {
         return instructions;
     }
 
-    public List<String> getIngredients() {
+    public List<RecipeIngredientDTO> getIngredients() {
         return ingredients;
     }
 
