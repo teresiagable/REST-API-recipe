@@ -11,37 +11,47 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import se.lexicon.almgru.restapi.data.IngredientRepository;
 import se.lexicon.almgru.restapi.dto.CreateIngredientDTO;
+import se.lexicon.almgru.restapi.dto.IngredientDTO;
 import se.lexicon.almgru.restapi.entity.Ingredient;
 import se.lexicon.almgru.restapi.exception.UniquenessViolationException;
 import se.lexicon.almgru.restapi.exception.ValidationException;
+import se.lexicon.almgru.restapi.service.IngredientConverter;
 
 import javax.validation.Valid;
+import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
 public class IngredientController {
 
     private final IngredientRepository repository;
+    private final IngredientConverter converter;
 
     @Autowired
-    public IngredientController(IngredientRepository repository) {
+    public IngredientController(IngredientRepository repository, IngredientConverter converter) {
         this.repository = repository;
+        this.converter = converter;
     }
 
     @GetMapping("/api/ingredients")
-    public ResponseEntity<Iterable<Ingredient>> getIngredients(
+    public ResponseEntity<Collection<IngredientDTO>> getIngredients(
             @RequestParam(name = "query", required = false) String query
     ) {
-        return ResponseEntity.ok(
-                query != null ?
-                repository.findByIngredientNameContainingIgnoreCase(query) :
-                repository.findAll()
-        );
+        Iterable<Ingredient> ingredients = query != null ?
+                        repository.findByIngredientNameContainingIgnoreCase(query) :
+                        repository.findAll();
+
+        return ResponseEntity.ok(StreamSupport.stream(ingredients.spliterator(), false)
+                .map(converter::ingredientToDTO)
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/api/ingredients/{id}")
-    public ResponseEntity<Ingredient> getIngredients(@PathVariable("id") Integer id) {
+    public ResponseEntity<IngredientDTO> getIngredients(@PathVariable("id") Integer id) {
         return repository
                 .findById(id)
+                .map(converter::ingredientToDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

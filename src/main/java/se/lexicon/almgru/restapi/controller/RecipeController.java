@@ -12,33 +12,39 @@ import org.springframework.web.bind.annotation.RestController;
 import se.lexicon.almgru.restapi.data.RecipeCategoryRepository;
 import se.lexicon.almgru.restapi.data.RecipeRepository;
 import se.lexicon.almgru.restapi.dto.CreateRecipeDTO;
+import se.lexicon.almgru.restapi.dto.RecipeDTO;
 import se.lexicon.almgru.restapi.entity.Recipe;
 import se.lexicon.almgru.restapi.entity.RecipeCategory;
 import se.lexicon.almgru.restapi.entity.RecipeInstruction;
 import se.lexicon.almgru.restapi.exception.InvalidParameterCombinationException;
 import se.lexicon.almgru.restapi.exception.ValidationException;
+import se.lexicon.almgru.restapi.service.RecipeConverter;
 import se.lexicon.almgru.restapi.service.RecipeIngredientConverter;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
 public class RecipeController {
     private final RecipeRepository recipeRepository;
     private final RecipeCategoryRepository categoryRepository;
     private final RecipeIngredientConverter recipeIngredientConverter;
+    private final RecipeConverter recipeConverter;
 
     @Autowired
     public RecipeController(RecipeRepository recipeRepository, RecipeCategoryRepository categoryRepository,
-                            RecipeIngredientConverter recipeIngredientConverter) {
+                            RecipeIngredientConverter recipeIngredientConverter, RecipeConverter recipeConverter) {
         this.recipeRepository = recipeRepository;
         this.categoryRepository = categoryRepository;
         this.recipeIngredientConverter = recipeIngredientConverter;
+        this.recipeConverter = recipeConverter;
     }
 
     @GetMapping("/api/recipes")
-    public ResponseEntity<Iterable<Recipe>> getRecipes(
+    public ResponseEntity<Collection<RecipeDTO>> getRecipes(
             @RequestParam(name = "query", required = false) String nameQuery,
             @RequestParam(name = "ingredient", required = false) String ingredient,
             @RequestParam(name = "categories", required = false) List<String> categories) {
@@ -48,21 +54,29 @@ public class RecipeController {
                     "Please only specify one of them."
             );
         }
+        Iterable<Recipe> results;
 
         if (nameQuery != null) {
-            return ResponseEntity.ok(recipeRepository.findByRecipeNameContainingIgnoreCase(nameQuery));
+            results = recipeRepository.findByRecipeNameContainingIgnoreCase(nameQuery);
         } else if (ingredient != null) {
-            return ResponseEntity.ok(recipeRepository.findByIngredientName(ingredient));
+            results = recipeRepository.findByIngredientName(ingredient);
         } else if (categories != null) {
-            return ResponseEntity.ok(recipeRepository.findByCategoriesContainsAny(categories));
+            results = recipeRepository.findByCategoriesContainsAny(categories);
         } else {
-            return ResponseEntity.ok(recipeRepository.findAll());
+            results = recipeRepository.findAll();
         }
+
+        return ResponseEntity.ok(StreamSupport
+                .stream(results.spliterator(), false)
+                .map(recipeConverter::recipeToDTO)
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/api/recipes/{id}")
-    public ResponseEntity<Recipe> getRecipeById(@PathVariable int id) {
-        return recipeRepository.findById(id)
+    public ResponseEntity<RecipeDTO> getRecipeById(@PathVariable int id) {
+        return recipeRepository
+                .findById(id)
+                .map(recipeConverter::recipeToDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
