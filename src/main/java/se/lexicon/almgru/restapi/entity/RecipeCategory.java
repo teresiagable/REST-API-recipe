@@ -39,6 +39,10 @@ public class RecipeCategory {
         this(0, category, new HashSet<>());
     }
 
+    public void removeRecipe(Recipe recipe) {
+        recipes.remove(recipe);
+    }
+
     public RecipeCategory() { }
 
     public int getRecipeCategoryId() {

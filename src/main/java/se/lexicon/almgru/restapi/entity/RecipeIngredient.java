@@ -44,6 +44,10 @@ public class RecipeIngredient {
 
     public RecipeIngredient() { }
 
+    public void detachRecipe() {
+        recipe = null;
+    }
+
     public String getRecipeIngredientId() {
         return recipeIngredientId;
     }

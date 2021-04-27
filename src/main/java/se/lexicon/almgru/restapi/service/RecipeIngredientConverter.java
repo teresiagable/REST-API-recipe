@@ -26,7 +26,8 @@ public class RecipeIngredientConverter {
     }
 
     public RecipeIngredientDTO recipeIngredientToDTO(RecipeIngredient recipeIngredient) {
-        return new RecipeIngredientDTO(recipeIngredient.getIngredient().getIngredientName(),
+        return new RecipeIngredientDTO(recipeIngredient.getIngredient().getIngredientId(),
+                recipeIngredient.getIngredient().getIngredientName(),
                 recipeIngredient.getMeasurement(), recipeIngredient.getAmount());
     }
 }
