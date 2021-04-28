@@ -14,6 +14,64 @@ REST API assignment at Lexicon's Fullstack developer course, java group 33.
 
 ### Recipes
 
+#### Create recipe
+
+`POST /api/recipes`
+
+__Request body__:
+```
+{
+   "name": "<string>",
+   "instructions": "<string>",
+   "ingredients": [
+      {
+         "name": "<string>",
+         "measurement": "<LITER|DECILITER|CENTILITER|KILOGRAM|GRAM|MILLIGRAM|PIECES>",
+         "amount": <number>
+      },
+      ...
+   ],
+   "categories": [
+      "<string>",
+      ...
+   ]
+}
+```
+
+Any ingredients or categories that do not exist will be created.
+
+##### Example:
+
+`POST /api/recipes`
+
+__Request Body__:
+```
+{
+    "name": "Pancakes",
+    "instructions": "1. Whisk flour, egg and milk. 2. Let rest for 30 min. 3. Cook on frying pan 1 minute on each side.",
+    "ingredients": [
+        {
+            "name": "plain flour",
+            "measurement": "GRAM",
+            "amount": 100
+        },
+        {
+            "name": "large egg",
+            "measurement": "PIECES",
+            "amount": 2
+        },
+        {
+            "name": "milk",
+            "measurement": "DECILITER",
+            "amount": 3
+        }
+    ],
+    "categories": [
+        "Simple"
+    ]
+}
+```
+
 #### Get all recipes
 
 `GET /api/recipes`
@@ -51,11 +109,11 @@ The ingredient name must match exactly but case is ignored. `ingredient=eg` for 
 - `GET /api/recipes?ingredient=bacon`
 - `GET /api/recipes?ingredient=vegetable+oil`
 
-#### Create recipe
+#### Update recipe
 
-`POST /api/recipes`
+`PATCH /api/recipes/<id>`
 
-Request body:
+__Request body__:
 ```
 {
    "name": "<string>",
@@ -75,7 +133,47 @@ Request body:
 }
 ```
 
-Any ingredients or categories that do not exist will be created.
+##### Example: Update recipe name
+
+`PATCH /api/recipes/1`
+
+__Request body__:
+```
+{
+   "name": "new name"
+}
+```
+
+##### Example: Remove all ingredients
+
+`PATCH /api/recipes/1`
+
+__Request body__:
+```
+{
+   "ingredients": []
+}
+```
+
+##### Example: Replace categories
+
+This example replaces all categories on recipe with id 1 with the specified categories.
+
+`PATCH /api/recipes/1`
+
+__Request body__:
+```
+{
+   "categories": [
+      "category1",
+      "category2"
+   ]
+}
+```
+
+#### Delete a recipe
+
+`DELETE /api/recipes/<id>`
 
 ### Ingredients
 
