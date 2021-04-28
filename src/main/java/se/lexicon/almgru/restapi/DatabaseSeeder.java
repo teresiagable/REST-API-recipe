@@ -12,8 +12,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import se.lexicon.almgru.restapi.data.IngredientRepository;
-import se.lexicon.almgru.restapi.entity.Ingredient;
+import se.lexicon.almgru.restapi.data.*;
+import se.lexicon.almgru.restapi.entity.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,59 +29,103 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class DatabaseSeeder implements ApplicationRunner {
     private final IngredientRepository ingredientRepository;
+    private final RecipeCategoryRepository categoryRepository;
+    private final RecipeInstructionRepository instructionRepository;
+    private final RecipeIngredientRepository recipeIngredientRepository;
+    private final RecipeRepository recipeRepository;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final boolean shouldSeedDatabase;
 
     @Autowired
     public DatabaseSeeder(IngredientRepository ingredientRepository,
-                          @Value("${almgru.restapi.seed-ingredients-database}") boolean shouldSeedDatabase) {
+                          RecipeCategoryRepository categoryRepository,
+                          RecipeInstructionRepository instructionRepository,
+                          RecipeIngredientRepository recipeIngredientRepository,
+                          RecipeRepository recipeRepository,
+                          @Value("true") boolean shouldSeedDatabase) {
         this.ingredientRepository = ingredientRepository;
         this.shouldSeedDatabase = shouldSeedDatabase;
+        this.categoryRepository = categoryRepository;
+    this.instructionRepository= instructionRepository;
+    this.recipeIngredientRepository = recipeIngredientRepository;
+    this.recipeRepository = recipeRepository;
     }
 
     public void run(ApplicationArguments args) {
         if (!ingredientRepository.findAll().iterator().hasNext() && shouldSeedDatabase) {
-            logger.info("Ingredients database is empty. Seeding ingredients with data from livsmedelsverket...");
-            File outputFile = Paths.get("seed-data.xml").toAbsolutePath().toFile();
-            Document document = null;
 
-            try {
-                if (outputFile.exists()) {
-                    logger.info("Ingredients data exists locally. Loading data from local file...");
-                    document = readDocument(outputFile);
-                } else {
-                    logger.info("Ingredients data does not exist locally. Please wait up to a few minutes while the data is downloaded.");
-                    document = downloadIngredientsSeed(outputFile);
-                }
-            } catch (Exception e) {
-                logger.trace("Error loading seed data.", e);
-                System.exit(1);
-            }
+            RecipeCategory category = new RecipeCategory("Pastries");
+            categoryRepository.save(category);
 
-            NodeList list = document.getElementsByTagName("Livsmedel");
+            RecipeInstruction instruction = new RecipeInstruction("blend all and heat it up");
+            instructionRepository.save(instruction);
+
+            Recipe recipePancake = new Recipe("Pancakes",instruction);
+            Recipe recipeFiffi = new Recipe("Fiffikaka",instruction);
+            recipeRepository.saveAll(Arrays.asList(recipePancake,recipeFiffi));
+
+            Collection<RecipeCategory> categories = Collections.singletonList(category);
+            recipePancake.setCategories(categories);
+
             List<Ingredient> ingredientsToSave = new ArrayList<>();
+            List<RecipeIngredient> recipeIngredientsToSave = new ArrayList<>();
 
-            for (int ingredientIndex = 0; ingredientIndex < list.getLength(); ingredientIndex++) {
-                Node node = list.item(ingredientIndex);
 
-                if (node instanceof Element) {
-                    String ingredient = ((Element)node).getElementsByTagName("Namn").item(0).getTextContent();
-                    ingredientsToSave.add(new Ingredient(ingredient));
-                }
-            }
+            Ingredient milk = new Ingredient("milk");
+            ingredientsToSave.add(milk);
+            recipeIngredientsToSave.add(new RecipeIngredient(6,Measurement.DECILITER,milk,recipePancake));
+            recipeIngredientsToSave.add(new RecipeIngredient(2,Measurement.DECILITER,milk,recipeFiffi));
+
+
+            Ingredient egg = new Ingredient("egg");
+            ingredientsToSave.add(egg);
+            recipeIngredientsToSave.add(new RecipeIngredient(3,Measurement.PIECES,egg,recipePancake));
+            recipeIngredientsToSave.add(new RecipeIngredient(3,Measurement.PIECES,egg,recipeFiffi));
+
+
+            Ingredient wheat_flour = new Ingredient("wheat flour");
+            ingredientsToSave.add(wheat_flour);
+            recipeIngredientsToSave.add(new RecipeIngredient(2.5,Measurement.DECILITER,wheat_flour,recipePancake));
+            recipeIngredientsToSave.add(new RecipeIngredient(6,Measurement.DECILITER,wheat_flour,recipeFiffi));
+
+
+            Ingredient baking_powder = new Ingredient("baking powder");
+            ingredientsToSave.add(baking_powder);
+            recipeIngredientsToSave.add(new RecipeIngredient(15,Measurement.MILLILITER,baking_powder,recipeFiffi));
+
+            Ingredient salt = new Ingredient("salt");
+            ingredientsToSave.add(salt);
+            recipeIngredientsToSave.add(new RecipeIngredient(5,Measurement.MILLILITER,salt,recipePancake));
+
+            Ingredient sugar = new Ingredient("sugar");
+            ingredientsToSave.add(sugar);
+            recipeIngredientsToSave.add(new RecipeIngredient(4.5,Measurement.DECILITER,sugar,recipeFiffi));
+
+            Ingredient butter = new Ingredient("butter");
+            ingredientsToSave.add(butter);
+            recipeIngredientsToSave.add(new RecipeIngredient(225,Measurement.GRAM,butter,recipeFiffi));
+
+            Ingredient vanilla_powder = new Ingredient("vanilla powder");
+            ingredientsToSave.add(vanilla_powder);
+            recipeIngredientsToSave.add(new RecipeIngredient(22,Measurement.MILLILITER,vanilla_powder,recipeFiffi));
+
+            Ingredient cocoa = new Ingredient("cocoa");
+            ingredientsToSave.add(cocoa);
+            recipeIngredientsToSave.add(new RecipeIngredient(1.5,Measurement.DECILITER,cocoa,recipeFiffi));
 
             logger.info("Inserting seed data into database.");
             ingredientRepository.saveAll(ingredientsToSave);
-
+            recipeIngredientRepository.saveAll(recipeIngredientsToSave);
             logger.info("Seeding of ingredients database complete.");
+
         }
     }
+
 
     public Document downloadIngredientsSeed(File output) throws ParserConfigurationException, IOException,
             TransformerException, SAXException {

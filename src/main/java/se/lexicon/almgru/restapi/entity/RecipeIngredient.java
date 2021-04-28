@@ -38,6 +38,12 @@ public class RecipeIngredient {
         this.recipe = recipe;
     }
 
+    /**
+     * @param amount
+     * @param measurement
+     * @param ingredient
+     * @param recipe
+     */
     public RecipeIngredient(double amount, Measurement measurement, Ingredient ingredient, Recipe recipe) {
         this(null, amount, measurement, ingredient, recipe);
     }

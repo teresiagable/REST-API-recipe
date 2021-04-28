@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface IngredientRepository extends CrudRepository<Ingredient, Integer> {
+
+
     /**
      * Find an ingredient by exact name match, case insensitive.
      * @param name exact name of ingredient to find.

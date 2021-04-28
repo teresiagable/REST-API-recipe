@@ -46,11 +46,21 @@ public class Recipe {
         this.categories = categories;
     }
 
+    /**
+     * @param recipeName
+     * @param instructions
+     * @param ingredients
+     * @param categories
+     */
     public Recipe(String recipeName, RecipeInstruction instructions, Collection<RecipeIngredient> ingredients,
                   Collection<RecipeCategory> categories) {
         this(0, recipeName, instructions, ingredients, categories);
     }
 
+    /**
+     * @param recipeName
+     * @param instructions
+     */
     public Recipe(String recipeName, RecipeInstruction instructions) {
         this(0, recipeName, instructions, new HashSet<>(), new HashSet<>());
     }
