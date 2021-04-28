@@ -48,6 +48,10 @@ public class RecipeIngredient {
         this(null, amount, measurement, ingredient, recipe);
     }
 
+    public RecipeIngredient(double amount, Measurement measurement, Ingredient ingredient) {
+        this(null, amount, measurement, ingredient, null);
+    }
+
     public RecipeIngredient() { }
 
     public void detachRecipe() {
