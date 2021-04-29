@@ -26,13 +26,16 @@ public class CreateRecipeDTO {
     @ElementsNotEmpty
     private final List<String> categories;
 
+    private final int cookingTime;
+
     @JsonCreator
     public CreateRecipeDTO(String name, String instructions, List<RecipeIngredientDTO> ingredients,
-                           List<String> categories) {
+                           List<String> categories, int cookingTime) {
         this.name = name;
         this.instructions = instructions;
         this.ingredients = ingredients;
         this.categories = categories;
+        this.cookingTime = cookingTime;
     }
 
     public String getName() {
@@ -50,4 +53,9 @@ public class CreateRecipeDTO {
     public List<String> getCategories() {
         return categories;
     }
+
+    public Integer getCookingTime() {
+        return cookingTime;
+    }
+
 }

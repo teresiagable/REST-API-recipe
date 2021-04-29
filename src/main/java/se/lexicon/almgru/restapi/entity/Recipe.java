@@ -11,6 +11,8 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int recipeId;
 
+    private int cookingTime;
+
     private String recipeName;
 
     @OneToOne(
@@ -38,31 +40,27 @@ public class Recipe {
     private Collection<RecipeCategory> categories;
 
     public Recipe(int recipeId, String recipeName, RecipeInstruction instructions, Collection<RecipeIngredient> ingredients,
-                  Collection<RecipeCategory> categories) {
+                  Collection<RecipeCategory> categories, int cookingTime) {
         this.recipeId = recipeId;
         this.recipeName = recipeName;
         this.instructions = instructions;
         this.ingredients = ingredients;
         this.categories = categories;
+        this.cookingTime=cookingTime;
     }
 
-    /**
-     * @param recipeName
-     * @param instructions
-     * @param ingredients
-     * @param categories
-     */
+
     public Recipe(String recipeName, RecipeInstruction instructions, Collection<RecipeIngredient> ingredients,
-                  Collection<RecipeCategory> categories) {
-        this(0, recipeName, instructions, ingredients, categories);
+                  Collection<RecipeCategory> categories, int cookingTime) {
+        this(0, recipeName, instructions, ingredients, categories, cookingTime);
     }
 
     /**
      * @param recipeName
      * @param instructions
      */
-    public Recipe(String recipeName, RecipeInstruction instructions) {
-        this(0, recipeName, instructions, new HashSet<>(), new HashSet<>());
+    public Recipe(String recipeName, RecipeInstruction instructions, int cookingTime) {
+        this(0, recipeName, instructions, new HashSet<>(), new HashSet<>(),cookingTime);
     }
 
     public Recipe() { }
@@ -85,6 +83,10 @@ public class Recipe {
 
     public int getRecipeId() {
         return recipeId;
+    }
+
+    public int getCookingTime() {
+        return cookingTime;
     }
 
     public String getRecipeName() {

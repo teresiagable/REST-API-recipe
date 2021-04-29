@@ -107,7 +107,7 @@ public class RecipeController {
             );
         }
 
-        Recipe recipe = new Recipe(dto.getName(), new RecipeInstruction(dto.getInstructions()));
+        Recipe recipe = new Recipe(dto.getName(), new RecipeInstruction(dto.getInstructions()),dto.getCookingTime());
 
         recipe.setIngredients(dto
                 .getIngredients()

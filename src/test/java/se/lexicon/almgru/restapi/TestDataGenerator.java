@@ -49,7 +49,7 @@ public class TestDataGenerator {
     }
 
     public Recipe recipeWithName(String name) {
-        Recipe recipe = new Recipe(name, recipeInstruction());
+        Recipe recipe = new Recipe(name, recipeInstruction(),20);
 
         recipe.setIngredients(recipeIngredients(recipe));
         recipe.setCategories(recipeCategories(recipe));
@@ -58,7 +58,7 @@ public class TestDataGenerator {
     }
 
     public Recipe recipeWithIngredients(Ingredient ...ingredients) {
-        Recipe recipe = new Recipe(recipeName(), recipeInstruction());
+        Recipe recipe = new Recipe(recipeName(), recipeInstruction(),30);
 
         recipe.setIngredients(recipeIngredients(recipe, Arrays.asList(ingredients)));
         recipe.setCategories(recipeCategories(recipe));
@@ -67,7 +67,7 @@ public class TestDataGenerator {
     }
 
     public Recipe recipeWithCategories(RecipeCategory ...categories) {
-        Recipe recipe = new Recipe(recipeName(), recipeInstruction());
+        Recipe recipe = new Recipe(recipeName(), recipeInstruction(),40);
 
         recipe.setIngredients(recipeIngredients(recipe));
         recipe.setCategories(Arrays.asList(categories));

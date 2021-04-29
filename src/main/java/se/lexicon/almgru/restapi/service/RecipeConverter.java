@@ -32,6 +32,6 @@ public class RecipeConverter {
                 recipe.getCategories()
                         .stream()
                         .map(categoryConverter::recipeCategoryToDTO)
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList()), recipe.getCookingTime());
     }
 }

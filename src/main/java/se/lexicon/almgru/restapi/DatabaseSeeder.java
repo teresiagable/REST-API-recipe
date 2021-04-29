@@ -62,27 +62,26 @@ public class DatabaseSeeder implements ApplicationRunner {
                         new RecipeIngredient(225, Measurement.GRAM, new Ingredient("butter")),
                         new RecipeIngredient(22, Measurement.MILLILITER, new Ingredient("vanilla powder")),
                         new RecipeIngredient(1.5,Measurement.DECILITER, new Ingredient("cocoa"))
-                )
-        ));
+                ),
+        40));
         recipesToAdd.add(createRecipe(
                 "Pancakes",
                 "cook it",
-                Arrays.asList(
-                        new RecipeCategory("test"),
-                        new RecipeCategory("test2")
+                Collections.singletonList(
+                        new RecipeCategory("Brunch")
                 ),
                 Arrays.asList(
                         new RecipeIngredient(1, Measurement.LITER, milk),
                         new RecipeIngredient(4, Measurement.PIECES, egg),
                         new RecipeIngredient(4, Measurement.DECILITER, flour)
                 )
-        ));
+        ,20));
 
         recipeRepository.saveAll(recipesToAdd);
     }
 
-    private Recipe createRecipe(String name, String instructions, Collection<RecipeCategory> categories, Collection<RecipeIngredient> ingredients) {
-        Recipe recipe = new Recipe(name, new RecipeInstruction(instructions));
+    private Recipe createRecipe(String name, String instructions, Collection<RecipeCategory> categories, Collection<RecipeIngredient> ingredients, int cookingTime) {
+        Recipe recipe = new Recipe(name, new RecipeInstruction(instructions), cookingTime);
 
         for (RecipeCategory category : categories) {
             category.getRecipes().add(recipe);
@@ -94,6 +93,7 @@ public class DatabaseSeeder implements ApplicationRunner {
 
         recipe.setCategories(categories);
         recipe.setIngredients(ingredients);
+
 
         return recipe;
     }
