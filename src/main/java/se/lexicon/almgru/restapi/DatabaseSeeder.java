@@ -1,34 +1,12 @@
 package se.lexicon.almgru.restapi;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import se.lexicon.almgru.restapi.data.*;
 import se.lexicon.almgru.restapi.entity.*;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.*;
 
 @Component
@@ -49,9 +27,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         recipesToAdd.add(createRecipe(
                 "Fiffikaka",
                 "blend all and heat it up",
-                Collections.singletonList(
-                        new RecipeCategory("Pastries")
-                ),
+                new RecipeCategory("Pastries"),
                 Arrays.asList(
                         new RecipeIngredient(6, Measurement.DECILITER, milk),
                         new RecipeIngredient(3, Measurement.PIECES, egg),
@@ -67,10 +43,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         recipesToAdd.add(createRecipe(
                 "Pancakes",
                 "cook it",
-                Arrays.asList(
-                        new RecipeCategory("test"),
-                        new RecipeCategory("test2")
-                ),
+                new RecipeCategory("test"),
                 Arrays.asList(
                         new RecipeIngredient(1, Measurement.LITER, milk),
                         new RecipeIngredient(4, Measurement.PIECES, egg),
@@ -81,18 +54,15 @@ public class DatabaseSeeder implements ApplicationRunner {
         recipeRepository.saveAll(recipesToAdd);
     }
 
-    private Recipe createRecipe(String name, String instructions, Collection<RecipeCategory> categories, Collection<RecipeIngredient> ingredients) {
-        Recipe recipe = new Recipe(name, new RecipeInstruction(instructions));
-
-        for (RecipeCategory category : categories) {
-            category.getRecipes().add(recipe);
-        }
+    private Recipe createRecipe(String name, String instructions, RecipeCategory category, Collection<RecipeIngredient> ingredients) {
+        Recipe recipe = new Recipe(name, instructions);
+        category.getRecipes().add(recipe);
 
         for (RecipeIngredient ingredient : ingredients) {
             ingredient.setRecipe(recipe);
         }
 
-        recipe.setCategories(categories);
+        recipe.setCategory(category);
         recipe.setIngredients(ingredients);
 
         return recipe;

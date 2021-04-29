@@ -5,18 +5,18 @@ import java.util.Collection;
 public class RecipeDTO {
     private final Integer id;
     private final String name;
-    private final RecipeInstructionDTO instructions;
+    private final String instructions;
     private final Collection<RecipeIngredientDTO> ingredients;
-    private final Collection<RecipeCategoryDTO> categories;
+    private final RecipeCategoryDTO category;
 
-    public RecipeDTO(Integer id, String name, RecipeInstructionDTO instructions,
+    public RecipeDTO(Integer id, String name, String instructions,
                      Collection<RecipeIngredientDTO> ingredients,
-                     Collection<RecipeCategoryDTO> categories) {
+                     RecipeCategoryDTO category) {
         this.id = id;
         this.name = name;
         this.instructions = instructions;
         this.ingredients = ingredients;
-        this.categories = categories;
+        this.category = category;
     }
 
     public Integer getId() {
@@ -27,7 +27,7 @@ public class RecipeDTO {
         return name;
     }
 
-    public RecipeInstructionDTO getInstructions() {
+    public String getInstructions() {
         return instructions;
     }
 
@@ -35,7 +35,7 @@ public class RecipeDTO {
         return ingredients;
     }
 
-    public Collection<RecipeCategoryDTO> getCategories() {
-        return categories;
+    public RecipeCategoryDTO getCategory() {
+        return category;
     }
 }

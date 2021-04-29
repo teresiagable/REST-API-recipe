@@ -52,7 +52,7 @@ public class TestDataGenerator {
         Recipe recipe = new Recipe(name, recipeInstruction());
 
         recipe.setIngredients(recipeIngredients(recipe));
-        recipe.setCategories(recipeCategories(recipe));
+        recipe.setCategory(recipeCategory(recipe));
 
         return recipe;
     }
@@ -61,22 +61,22 @@ public class TestDataGenerator {
         Recipe recipe = new Recipe(recipeName(), recipeInstruction());
 
         recipe.setIngredients(recipeIngredients(recipe, Arrays.asList(ingredients)));
-        recipe.setCategories(recipeCategories(recipe));
+        recipe.setCategory(recipeCategory(recipe));
 
         return recipe;
     }
 
-    public Recipe recipeWithCategories(RecipeCategory ...categories) {
+    public Recipe recipeWithCategories(RecipeCategory category) {
         Recipe recipe = new Recipe(recipeName(), recipeInstruction());
 
         recipe.setIngredients(recipeIngredients(recipe));
-        recipe.setCategories(Arrays.asList(categories));
+        recipe.setCategory(category);
 
         return recipe;
     }
 
-    public RecipeInstruction recipeInstruction() {
-        return new RecipeInstruction(faker.lorem().paragraph());
+    public String recipeInstruction() {
+        return faker.lorem().paragraph();
     }
 
     public Measurement measurement() {
@@ -99,9 +99,7 @@ public class TestDataGenerator {
         return faker.lorem().word();
     }
 
-    public List<RecipeCategory> recipeCategories(Recipe recipe) {
-        return IntStream.range(1, faker.random().nextInt(1, 3))
-                .mapToObj(i -> new RecipeCategory(recipeCategoryName(), Collections.singletonList(recipe)))
-                .collect(Collectors.toList());
+    public RecipeCategory recipeCategory(Recipe recipe) {
+        return new RecipeCategory(recipeCategoryName(), Collections.singletonList(recipe));
     }
 }

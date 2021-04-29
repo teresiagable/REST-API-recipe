@@ -29,7 +29,7 @@ public interface RecipeRepository extends CrudRepository<Recipe, Integer> {
      * @param category Name of category to search recipes by.
      * @return A set containing all recipes with the specified category.
      */
-    @Query("SELECT r FROM Recipe r JOIN FETCH r.categories AS rc WHERE UPPER(rc.category) = UPPER(:category)")
+    @Query("SELECT r FROM Recipe r JOIN FETCH r.category AS rc WHERE UPPER(rc.category) = UPPER(:category)")
     Set<Recipe> findByCategory(@Param("category") String category);
 
     /**
@@ -37,6 +37,6 @@ public interface RecipeRepository extends CrudRepository<Recipe, Integer> {
      * @param categories Collection of categories to match recipes by.
      * @return A set containing all recipes that contain one or more of the specified categories.
      */
-    @Query("SELECT r FROM Recipe r JOIN FETCH r.categories AS rc WHERE rc.category IN (:categories)")
+    @Query("SELECT r FROM Recipe r JOIN FETCH r.category AS rc WHERE rc.category IN (:categories)")
     Set<Recipe> findByCategoriesContainsAny(@Param("categories") Collection<String> categories);
 }

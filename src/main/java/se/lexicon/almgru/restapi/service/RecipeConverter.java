@@ -8,14 +8,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class RecipeConverter {
-    private final RecipeInstructionConverter instructionConverter;
     private final RecipeIngredientConverter ingredientConverter;
     private final RecipeCategoryConverter categoryConverter;
 
-    public RecipeConverter(RecipeInstructionConverter instructionConverter,
-                           RecipeIngredientConverter ingredientConverter,
-                           RecipeCategoryConverter categoryConverter) {
-        this.instructionConverter = instructionConverter;
+    public RecipeConverter(RecipeIngredientConverter ingredientConverter, RecipeCategoryConverter categoryConverter) {
         this.ingredientConverter = ingredientConverter;
         this.categoryConverter = categoryConverter;
     }
@@ -24,14 +20,11 @@ public class RecipeConverter {
         return new RecipeDTO(
                 recipe.getRecipeId(),
                 recipe.getRecipeName(),
-                instructionConverter.recipeInstructionToDTO(recipe.getInstructions()),
+                recipe.getInstructions(),
                 recipe.getIngredients()
                         .stream()
                         .map(ingredientConverter::recipeIngredientToDTO)
                         .collect(Collectors.toList()),
-                recipe.getCategories()
-                        .stream()
-                        .map(categoryConverter::recipeCategoryToDTO)
-                        .collect(Collectors.toList()));
+                categoryConverter.recipeCategoryToDTO(recipe.getCategory()));
     }
 }

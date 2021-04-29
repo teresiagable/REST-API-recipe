@@ -31,10 +31,7 @@ __Request body__:
       },
       ...
    ],
-   "categories": [
-      "<string>",
-      ...
-   ]
+   "category": "<string>"
 }
 ```
 
@@ -66,9 +63,7 @@ __Request Body__:
             "amount": 3
         }
     ],
-    "categories": [
-        "Simple"
-    ]
+    "category": "Simple"
 }
 ```
 
@@ -87,16 +82,18 @@ __Request Body__:
 ##### Examples
 
 - `GET /api/recipes?query=pasta`
-- `GET /api/recipes?name=spaghetti+bolognese`
+- `GET /api/recipes?query=spaghetti+bolognese`
 
-#### Get all recipes that contains at least one of the specified categories
+#### Get all recipes that is categorized by any of the specified categories
 
 `GET /api/recipes?categories=<comma separated list of categories>`
 
+Case-sensitive.
+
 ##### Examples
 
-- `GET /api/recipes?categories=pasta`
-- `GET /api/recipes?categories=fast+food,indian,mexican`
+- `GET /api/recipes?categories=Pasta`
+- `GET /api/recipes?categories=Fast+Food,Indian,Mexican`
 
 #### Get all recipes that contains the specifed ingredient
 
@@ -126,10 +123,7 @@ __Request body__:
       },
       ...
    ],
-   "categories": [
-      "<string>",
-      ...
-   ]
+   "category": "<string>",
 }
 ```
 
@@ -152,22 +146,6 @@ __Request body__:
 ```
 {
    "ingredients": []
-}
-```
-
-##### Example: Replace categories
-
-This example replaces all categories on recipe with id 1 with the specified categories.
-
-`PATCH /api/recipes/1`
-
-__Request body__:
-```
-{
-   "categories": [
-      "category1",
-      "category2"
-   ]
 }
 ```
 

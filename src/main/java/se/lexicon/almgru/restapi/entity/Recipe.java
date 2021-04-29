@@ -13,11 +13,7 @@ public class Recipe {
 
     private String recipeName;
 
-    @OneToOne(
-            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
-            fetch = FetchType.LAZY
-    )
-    private RecipeInstruction instructions;
+    private String instructions;
 
     @OneToMany(
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
@@ -26,43 +22,38 @@ public class Recipe {
     )
     private Collection<RecipeIngredient> ingredients;
 
-    @ManyToMany(
+    @ManyToOne(
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             fetch = FetchType.LAZY
     )
-    @JoinTable(
-            name = "recipe_recipe_category",
-            joinColumns = @JoinColumn(name = "recipe_id"),
-            inverseJoinColumns = @JoinColumn(name = "recipe_category_id")
-    )
-    private Collection<RecipeCategory> categories;
+    private RecipeCategory category;
 
-    public Recipe(int recipeId, String recipeName, RecipeInstruction instructions, Collection<RecipeIngredient> ingredients,
-                  Collection<RecipeCategory> categories) {
+    public Recipe(int recipeId, String recipeName, String instructions, Collection<RecipeIngredient> ingredients,
+                  RecipeCategory category) {
         this.recipeId = recipeId;
         this.recipeName = recipeName;
         this.instructions = instructions;
         this.ingredients = ingredients;
-        this.categories = categories;
+        this.category = category;
     }
 
     /**
      * @param recipeName
      * @param instructions
      * @param ingredients
-     * @param categories
+     * @param category
      */
-    public Recipe(String recipeName, RecipeInstruction instructions, Collection<RecipeIngredient> ingredients,
-                  Collection<RecipeCategory> categories) {
-        this(0, recipeName, instructions, ingredients, categories);
+    public Recipe(String recipeName, String instructions, Collection<RecipeIngredient> ingredients,
+                  RecipeCategory category) {
+        this(0, recipeName, instructions, ingredients, category);
     }
 
     /**
      * @param recipeName
      * @param instructions
      */
-    public Recipe(String recipeName, RecipeInstruction instructions) {
-        this(0, recipeName, instructions, new HashSet<>(), new HashSet<>());
+    public Recipe(String recipeName, String instructions) {
+        this(0, recipeName, instructions, new HashSet<>(), null);
     }
 
     public Recipe() { }
@@ -79,8 +70,8 @@ public class Recipe {
     }
 
     public void clearCategories() {
-        categories.forEach(category -> category.removeRecipe(this));
-        categories.clear();
+        category.removeRecipe(this);
+        category = null;
     }
 
     public int getRecipeId() {
@@ -95,11 +86,11 @@ public class Recipe {
         this.recipeName = name;
     }
 
-    public RecipeInstruction getInstructions() {
+    public String getInstructions() {
         return instructions;
     }
 
-    public void setInstructions(RecipeInstruction instructions) {
+    public void setInstructions(String instructions) {
         this.instructions = instructions;
     }
 
@@ -111,12 +102,12 @@ public class Recipe {
         this.ingredients = ingredients;
     }
 
-    public Collection<RecipeCategory> getCategories() {
-        return categories;
+    public RecipeCategory getCategory() {
+        return category;
     }
 
-    public void setCategories(Collection<RecipeCategory> categories) {
-        this.categories = categories;
+    public void setCategory(RecipeCategory category) {
+        this.category = category;
     }
 
     @Override

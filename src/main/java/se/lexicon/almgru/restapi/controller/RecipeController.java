@@ -13,16 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import se.lexicon.almgru.restapi.data.RecipeCategoryRepository;
 import se.lexicon.almgru.restapi.data.RecipeIngredientRepository;
-import se.lexicon.almgru.restapi.data.RecipeInstructionRepository;
 import se.lexicon.almgru.restapi.data.RecipeRepository;
 import se.lexicon.almgru.restapi.dto.CreateRecipeDTO;
-import se.lexicon.almgru.restapi.dto.RecipeCategoryDTO;
 import se.lexicon.almgru.restapi.dto.RecipeDTO;
 import se.lexicon.almgru.restapi.dto.UpdateRecipeDTO;
 import se.lexicon.almgru.restapi.entity.Recipe;
 import se.lexicon.almgru.restapi.entity.RecipeCategory;
-import se.lexicon.almgru.restapi.entity.RecipeIngredient;
-import se.lexicon.almgru.restapi.entity.RecipeInstruction;
 import se.lexicon.almgru.restapi.exception.InvalidParameterCombinationException;
 import se.lexicon.almgru.restapi.exception.ValidationException;
 import se.lexicon.almgru.restapi.service.RecipeConverter;
@@ -40,7 +36,6 @@ public class RecipeController {
     private final RecipeRepository recipeRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final RecipeCategoryRepository categoryRepository;
-    private final RecipeInstructionRepository instructionRepository;
 
     private final RecipeIngredientConverter recipeIngredientConverter;
     private final RecipeConverter recipeConverter;
@@ -48,12 +43,10 @@ public class RecipeController {
     @Autowired
     public RecipeController(RecipeRepository recipeRepository, RecipeIngredientRepository recipeIngredientRepository,
                             RecipeCategoryRepository categoryRepository,
-                            RecipeInstructionRepository instructionRepository,
                             RecipeIngredientConverter recipeIngredientConverter, RecipeConverter recipeConverter) {
         this.recipeRepository = recipeRepository;
         this.recipeIngredientRepository = recipeIngredientRepository;
         this.categoryRepository = categoryRepository;
-        this.instructionRepository = instructionRepository;
         this.recipeIngredientConverter = recipeIngredientConverter;
         this.recipeConverter = recipeConverter;
     }
@@ -107,20 +100,17 @@ public class RecipeController {
             );
         }
 
-        Recipe recipe = new Recipe(dto.getName(), new RecipeInstruction(dto.getInstructions()));
+        Recipe recipe = new Recipe(dto.getName(), dto.getInstructions());
 
         recipe.setIngredients(dto
                 .getIngredients()
                 .stream()
                 .map(ingredientDTO -> recipeIngredientConverter.dtoToRecipeIngredient(ingredientDTO, recipe))
                 .collect(Collectors.toList()));
-        recipe.setCategories(dto
-                .getCategories()
-                .stream()
-                .map(categoryName -> categoryRepository
-                        .findByCategoryEqualsIgnoreCase(categoryName)
-                        .orElse(new RecipeCategory(categoryName)))
-                .collect(Collectors.toList()));
+
+        recipe.setCategory(categoryRepository
+                .findByCategoryEqualsIgnoreCase(dto.getCategory())
+                .orElse(new RecipeCategory(dto.getCategory())));
 
         recipeRepository.save(recipe);
 
@@ -150,7 +140,7 @@ public class RecipeController {
         }
 
         if (dto.getInstructions() != null) {
-            recipe.get().getInstructions().setInstructions(dto.getInstructions());
+            recipe.get().setInstructions(dto.getInstructions());
         }
 
         if (dto.getIngredients() != null) {
@@ -160,13 +150,10 @@ public class RecipeController {
                     .collect(Collectors.toList()));
         }
 
-        if (dto.getCategories() != null) {
-            recipe.get().clearCategories();
-            recipe.get().getCategories().addAll(dto.getCategories().stream()
-                    .map(categoryName -> categoryRepository
-                            .findByCategoryEqualsIgnoreCase(categoryName)
-                            .orElse(new RecipeCategory(categoryName)))
-                    .collect(Collectors.toList()));
+        if (dto.getCategory() != null) {
+            recipe.get().setCategory(categoryRepository
+                    .findByCategoryEqualsIgnoreCase(dto.getCategory())
+                    .orElse(new RecipeCategory(dto.getCategory())));
         }
 
         recipeRepository.save(recipe.get());
@@ -182,8 +169,6 @@ public class RecipeController {
             return ResponseEntity.notFound().build();
         }
 
-        instructionRepository.deleteById(recipe.get().getInstructions().getRecipeInstructionId());
-        recipeIngredientRepository.deleteAll(recipe.get().getIngredients());
         recipeRepository.delete(recipe.get());
 
         return ResponseEntity.ok(String.format("Deleted recipe with id %d.", id));
